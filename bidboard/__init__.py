@@ -74,6 +74,17 @@ def home():
     else:
         return render_template('home.html')
 
+
+# Grab the blueprints from the other views.py files for each "app"
+# make sure route and method is defined in views.py
+from bidboard.users.views import users_blueprint
+from bidboard.sessions.views import sessions_blueprint
+from bidboard.media.views import media_blueprint
+
+app.register_blueprint(users_blueprint, url_prefix="/users")
+app.register_blueprint(sessions_blueprint, url_prefix='/')
+app.register_blueprint(media_blueprint, url_prefix='/media')
+
 # Flask_Assets
 assets = Environment(app)
 
@@ -88,3 +99,4 @@ assets.register({'js_all': js, 'css_all': css})
 
 # import user, image & marketplace models so that you can run migration
 from bidboard.users.model import User
+from bidboard.media.model import Medium
