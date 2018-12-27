@@ -80,6 +80,7 @@ def home():
 from bidboard.users.views import users_blueprint
 from bidboard.sessions.views import sessions_blueprint
 from bidboard.media.views import media_blueprint
+import bidboard_api
 
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix='/')

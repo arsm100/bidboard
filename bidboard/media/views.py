@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from bidboard.media.forms import UploadForm, DeleteForm
+from bidboard.media.forms import UploadForm, DeleteForm, EditCampaignForm
 from bidboard.helpers.helpers import allowed_file, upload_file
 from werkzeug.utils import secure_filename
 from bidboard.media.model import Medium, db
@@ -23,14 +23,16 @@ def new(id):
 def upload(id):
     if int(id) == current_user.id:
 
-        # check there is a file
+        # check there is a file, campaign_name and description
         form = UploadForm()
-        if "user_media" not in request.files:
-            flash("No files were uploaded!")
+        if "user_media" not in request.files or not form.campaign_name.data or not form.description.data:
+            flash("All fields are required!")
             return render_template('media/upload.html', form=form)
 
-        # grab the file
+        # grab the file, campaign_name and description
         file = request.files["user_media"]
+        campaign_name = form.campaign_name.data
+        description = form.description.data
 
         # check there is a name
         if file.filename == "":
@@ -52,6 +54,8 @@ def upload(id):
             new_medium = Medium(
                 user_id=id,
                 medium_name=str(file.filename),
+                campaign_name=campaign_name,
+                description=description
             )
 
             db.session.add(new_medium)
