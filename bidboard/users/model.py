@@ -52,17 +52,17 @@ class User(db.Model, UserMixin):
 
     @validates('company_name')
     @validation_preparation
-    def validate_store_name(self, key, company_name):
+    def validate_company_name(self, key, company_name):
         if not company_name:
-            self.validation_errors.append('No Store Name provided')
+            self.validation_errors.append('No Company Name provided')
 
         if (not self.company_name == company_name):
             if User.query.filter_by(company_name=company_name).first():
-                self.validation_errors.append('Store Name is already in use')
+                self.validation_errors.append('Company Name is already in use')
 
         if len(company_name) > 0 and (len(company_name) < 3 or len(company_name) > 50):
             self.validation_errors.append(
-                'Store Name must be between 3 and 50 characters')
+                'Company Name must be between 3 and 50 characters')
 
         return company_name
 
