@@ -1,22 +1,28 @@
 from flask import jsonify, Blueprint, request, make_response
-from bidboard.media.model import Medium
+from bidboard.media.model import Medium, db
 from bidboard.users.model import User
+import random
+from werkzeug.utils import secure_filename
+from bidboard.helpers.helpers import allowed_file, upload_file
+
 
 media_api_blueprint = Blueprint('media_api',
-                             __name__,
-                             template_folder='templates')
+                                __name__,
+                                template_folder='templates')
 
 
 @media_api_blueprint.route('/', methods=['GET'])
 def index():
     if request.args.get('userId'):
-        media = Medium.query.with_entities(Medium.medium_url).filter_by(user_id = int(request.args['userId'])).all()
+        media = Medium.query.with_entities(Medium.medium_url).filter_by(
+            user_id=int(request.args['userId'])).all()
     else:
         media = Medium.query.with_entities(Medium.medium_url).all()
 
     media = [medium[0] for medium in media]
 
     return jsonify(media)
+
 
 @media_api_blueprint.route('/me', methods=['GET'])
 def show():
@@ -37,7 +43,8 @@ def show():
     user = User.query.get(user_id)
 
     if user:
-        media = Medium.query.with_entities(Medium.medium_url).filter_by(user_id = user.id).all()
+        media = Medium.query.with_entities(
+            Medium.medium_url).filter_by(user_id=user.id).all()
         media = [medium[0] for medium in media]
 
         return jsonify(media)
@@ -45,6 +52,81 @@ def show():
         responseObject = {
             'status': 'failed',
             'message': 'Authentication failed'
+        }
+
+        return make_response(jsonify(responseObject)), 401
+
+
+@media_api_blueprint.route("/upload", methods=['POST'])
+def upload():
+        # check there is a file, campaign_name and description
+    form = request.form
+
+    if "user_media" not in request.files or not form.get('campaign_name') or not form.get('description'):
+
+        responseObject = {
+            'status': 'fail',
+            'message': "All fields are required"
+        }
+
+        return make_response(jsonify(responseObject)), 401
+
+    # grab the file, campaign_name and description
+    file = request.files["user_media"]
+    user_id = form['user_id']
+    campaign_name = form['campaign_name']
+    description = form['description']
+
+    # check there is a name
+    if file.filename == "":
+
+        responseObject = {
+            'status': 'fail',
+            'message': "Invalid file name"
+        }
+
+        return make_response(jsonify(responseObject)), 401
+
+    # check file size
+    if len(file.read()) > (20 * 1024 * 1024):
+
+        responseObject = {
+            'status': 'fail',
+            'message': "Max size allowed is 20 MB"
+        }
+
+        return make_response(jsonify(responseObject)), 401
+
+    # check correct extension and upload if valid
+    if file and allowed_file(file.filename):
+        file.seek(0)
+        serial_filename = f'{user_id}.{random.randint(1,100000)}.{file.filename}'
+        file.filename = secure_filename(serial_filename)
+        upload_file(file)
+
+        new_medium = Medium(
+            user_id=user_id,
+            medium_name=str(file.filename),
+            campaign_name=campaign_name,
+            description=description
+        )
+
+        db.session.add(new_medium)
+        db.session.commit()
+
+        responseObject = {
+            'status': 'success',
+            'message': 'Media uploaded successfully ',
+            'medium_url': new_medium.medium_url
+        }
+
+        return make_response(jsonify(responseObject)), 201
+
+    else:
+
+        responseObject = {
+            'status': 'fail',
+            'message': "Media format not supported"
         }
 
         return make_response(jsonify(responseObject)), 401
