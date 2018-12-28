@@ -15,11 +15,14 @@ def sign_in():
 
     if user and user.check_password(post_data.get('password')):
         auth_token = user.encode_auth_token(user.id)
+        del user.__dict__['_sa_instance_state']
+        del user.__dict__['password_hash']
 
         responseObject = {
             'status': 'success',
             'message': 'Successfully signed in.',
-            'auth_token': auth_token.decode()
+            'auth_token': auth_token.decode(),
+            'user': user.__dict__
         }
 
         return make_response(jsonify(responseObject)), 201
