@@ -2,8 +2,9 @@ from flask import jsonify, Blueprint, request, make_response
 from bidboard.users.model import User
 
 sessions_api_blueprint = Blueprint('sessions_api',
-                             __name__,
-                             template_folder='templates')
+                                   __name__,
+                                   template_folder='templates')
+
 
 @sessions_api_blueprint.route('/login', methods=['POST'])
 def sign_in():
@@ -24,6 +25,7 @@ def sign_in():
         return make_response(jsonify(responseObject)), 201
 
     else:
+
         responseObject = {
             'status': 'fail',
             'message': 'Some error occurred. Please try again.'
