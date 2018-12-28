@@ -4,6 +4,7 @@ from bidboard.media.forms import UploadForm, DeleteForm, EditCampaignForm
 from bidboard.helpers.helpers import allowed_file, upload_file
 from werkzeug.utils import secure_filename
 from bidboard.media.model import Medium, db
+from bidboard import clarifai
 import random
 
 media_blueprint = Blueprint('media',
@@ -60,6 +61,7 @@ def upload(id):
 
             db.session.add(new_medium)
             db.session.commit()
+
             flash('Media uploaded successfully!')
             # change redirect destination later
             return redirect(url_for('home', id=current_user.id))

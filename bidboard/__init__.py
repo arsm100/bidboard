@@ -5,6 +5,7 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from flask_assets import Bundle, Environment
 from authlib.flask.client import OAuth
+from clarifai.rest import ClarifaiApp
 import config
 
 app = Flask(__name__)
@@ -61,10 +62,8 @@ S3_LOCATION = f'http://{S3_BUCKET}.s3.amazonaws.com/'
 S3_KEY = config.S3_KEY
 S3_SECRET = config.S3_SECRET
 
-app.config['S3_BUCKET'] = S3_BUCKET
-app.config['S3_KEY'] = S3_KEY
-app.config['S3_SECRET'] = S3_SECRET
-
+# Clarifai initialisation
+clarifai = ClarifaiApp(api_key=config.CLARIFAI_KEY)
 
 # Home Page
 @app.route("/")
