@@ -40,11 +40,15 @@ def create():
         db.session.add(new_user)
         db.session.commit()
         auth_token = new_user.encode_auth_token(new_user.id)
-        
+        del new_user.__dict__['_sa_instance_state']
+        del new_user.__dict__['password_hash']
+        del new_user.__dict__['validation_errors']
+
         responseObject = {
             'status': 'success',
             'message': 'Successfully created a user and signed in.',
-            'auth_token': auth_token.decode()
+            'auth_token': auth_token.decode(),
+            'user': new_user.__dict__
         }
 
         return make_response(jsonify(responseObject)), 201
