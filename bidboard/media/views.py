@@ -75,6 +75,19 @@ def upload(id):
                         final_concepts[output['model']['name']
                                        ][concept['name']] = concept['value']
 
+                new_medium.concepts = final_concepts
+                db.session.add(new_medium)
+                db.session.commit()
+
+                moderation = new_medium.concepts['moderation']
+                illegal = new_medium.concepts['illegal']
+                if new_medium.concepts['nsfw-v1.0']['nsfw'] < 0.3 \
+                        and moderation['gore']+moderation['explicit']+moderation['drug'] < 0.3\
+                        and illegal['smoking']+illegal['cigarettes']+illegal['guns']+illegal['weapons'] < 0.3:
+                    new_medium.is_approved = True
+                    db.session.add(new_medium)
+                    db.session.commit()
+
             else:
                 content_review = moderation_model.predict(
                     [ClVideo(url=new_medium.medium_url)])
@@ -87,16 +100,21 @@ def upload(id):
                         final_concepts[frame['frame_info']['index']
                                        ][concept['name']] = concept['value']
 
-            new_medium.concepts = final_concepts
-            db.session.add(new_medium)
-            db.session.commit()
-
-            moderation = new_medium.concepts['moderation']
-            if new_medium.concepts['nsfw-v1.0']['nsfw'] < 0.3 and moderation['gore']+moderation['explicit']+moderation['drug'] < 0.3:
-                new_medium.is_approved = True
+                new_medium.concepts = final_concepts
                 db.session.add(new_medium)
                 db.session.commit()
 
+                video_frames = list(new_medium.concepts.items())
+                new_medium.is_approved = True
+                for video_frame in video_frames:
+                    if video_frame[1]['gore'] + video_frame[1]['drug'] + video_frame[1]['explicit'] > 3:
+                        new_medium.is_approved = False
+                        break
+
+                db.session.add(new_medium)
+                db.session.commit()
+            import pdb
+            pdb.set_trace()
             # change redirect destination later
             return redirect(url_for('home', id=current_user.id))
         else:
