@@ -4,7 +4,7 @@ from bidboard.media.forms import UploadForm, DeleteForm, EditCampaignForm
 from bidboard.helpers.helpers import allowed_file, upload_file, image_extensions, video_extensions
 from werkzeug.utils import secure_filename
 from bidboard.media.model import Medium, db
-from bidboard import clarifai, ClImage, ClVideo, general_model, nsfw_model
+from bidboard import clarifai, workflow, ClImage, ClVideo, general_model, nsfw_model, moderation_model
 import random
 
 media_blueprint = Blueprint('media',
@@ -63,29 +63,39 @@ def upload(id):
             db.session.commit()
             flash('Media uploaded successfully and content review is in progress!')
 
-            if new_medium.medium_name.rsplit('.', 3)[3] in image_extensions:
-                content_review = general_model.predict(
+            if new_medium.medium_name.rsplit('.', 1)[1] in image_extensions:
+                content_review = workflow.predict(
                     [ClImage(url=new_medium.medium_url)])
-                nsfw_content_review = nsfw_model.predict(
-                    [ClImage(url=new_medium.medium_url)])
-                concepts = content_review['outputs'][0]['data']['concepts']
-                nsfw_concepts = nsfw_content_review['outputs'][0]['data']['concepts']
-                for concept in concepts:
-                    print(concept['name'], concept['value'])
-                print('\n------------\n')
-                for concept in nsfw_concepts:
-                    print(concept['name'], concept['value'])
+                outputs = content_review['results'][0]['outputs']
+                final_concepts = {}
+                for output in outputs:
+                    concepts = output['data']['concepts']
+                    final_concepts[output['model']['name']] = {}
+                    for concept in concepts:
+                        final_concepts[output['model']['name']
+                                       ][concept['name']] = concept['value']
 
             else:
-                content_review = general_model.predict(
+                content_review = moderation_model.predict(
                     [ClVideo(url=new_medium.medium_url)])
-                # nsfw_content_review = nsfw_model.predict([ClVideo(url=new_medium.medium_url)])
                 frames = content_review['outputs'][0]['data']['frames']
+                final_concepts = {}
                 for frame in frames:
                     concepts = frame['data']['concepts']
-                    print(frame['frame_info']['index'], '\n')
+                    final_concepts[frame['frame_info']['index']] = {}
                     for concept in concepts:
-                        print(concept['name'], concept['value'])
+                        final_concepts[frame['frame_info']['index']
+                                       ][concept['name']] = concept['value']
+
+            new_medium.concepts = final_concepts
+            db.session.add(new_medium)
+            db.session.commit()
+
+            moderation = new_medium.concepts['moderation']
+            if new_medium.concepts['nsfw-v1.0']['nsfw'] < 0.3 and moderation['gore']+moderation['explicit']+moderation['drug'] < 0.3:
+                new_medium.is_approved = True
+                db.session.add(new_medium)
+                db.session.commit()
 
             # change redirect destination later
             return redirect(url_for('home', id=current_user.id))
