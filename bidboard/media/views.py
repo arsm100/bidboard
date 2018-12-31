@@ -1,15 +1,15 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from bidboard.media.forms import UploadForm, DeleteForm, EditCampaignForm
-from bidboard.helpers.helpers import allowed_file, upload_file
+from bidboard.helpers.helpers import allowed_file, upload_file, image_extensions, video_extensions
 from werkzeug.utils import secure_filename
 from bidboard.media.model import Medium, db
-from bidboard import clarifai
+from bidboard import clarifai, ClImage, ClVideo, general_model, nsfw_model
 import random
 
 media_blueprint = Blueprint('media',
-                             __name__,
-                             template_folder='templates')
+                            __name__,
+                            template_folder='templates')
 
 
 @media_blueprint.route("<id>/new", methods=['GET'])
@@ -61,8 +61,32 @@ def upload(id):
 
             db.session.add(new_medium)
             db.session.commit()
+            flash('Media uploaded successfully and content review is in progress!')
 
-            flash('Media uploaded successfully!')
+            if new_medium.medium_name.rsplit('.', 3)[3] in image_extensions:
+                content_review = general_model.predict(
+                    [ClImage(url=new_medium.medium_url)])
+                nsfw_content_review = nsfw_model.predict(
+                    [ClImage(url=new_medium.medium_url)])
+                concepts = content_review['outputs'][0]['data']['concepts']
+                nsfw_concepts = nsfw_content_review['outputs'][0]['data']['concepts']
+                for concept in concepts:
+                    print(concept['name'], concept['value'])
+                print('\n------------\n')
+                for concept in nsfw_concepts:
+                    print(concept['name'], concept['value'])
+
+            else:
+                content_review = general_model.predict(
+                    [ClVideo(url=new_medium.medium_url)])
+                # nsfw_content_review = nsfw_model.predict([ClVideo(url=new_medium.medium_url)])
+                frames = content_review['outputs'][0]['data']['frames']
+                for frame in frames:
+                    concepts = frame['data']['concepts']
+                    print(frame['frame_info']['index'], '\n')
+                    for concept in concepts:
+                        print(concept['name'], concept['value'])
+
             # change redirect destination later
             return redirect(url_for('home', id=current_user.id))
         else:
