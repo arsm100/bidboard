@@ -18,9 +18,9 @@ def validation_preparation(func):
 
 
 # Image upload helpers
-ALLOWED_EXTENSIONS = set(
-    ['png', 'jpg', 'jpeg', 'tiff', 'gif', 'avi', 'mp4', 'mov'])
-
+ALLOWED_EXTENSIONS = set(['png', 'jpg', 'jpeg', 'tiff', 'gif', 'avi', 'mp4', 'mov'])
+image_extensions = set(['png', 'jpg', 'jpeg', 'tiff', 'gif'])
+video_extensions = set(['avi', 'mp4', 'mov'])
 
 def allowed_file(filename):
     return '.' in filename and \

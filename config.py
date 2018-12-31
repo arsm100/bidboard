@@ -32,6 +32,7 @@ class DevelopmentConfig(Config):
     S3_LOCATION = f'http://{S3_BUCKET}.s3.amazonaws.com/'
     S3_KEY = os.environ['S3_ACCESS_KEY']
     S3_SECRET = os.environ['S3_SECRET_ACCESS_KEY']
+    CLARIFAI_KEY = os.environ['CLARIFAI_API_KEY']
 
 
 class TestingConfig(Config):

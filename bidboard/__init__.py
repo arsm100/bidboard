@@ -5,6 +5,9 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager, current_user
 from flask_assets import Bundle, Environment
 from authlib.flask.client import OAuth
+from clarifai.rest import ClarifaiApp, Workflow
+from clarifai.rest import Image as ClImage
+from clarifai.rest import Video as ClVideo
 import config
 
 app = Flask(__name__)
@@ -61,9 +64,12 @@ S3_LOCATION = f'http://{S3_BUCKET}.s3.amazonaws.com/'
 S3_KEY = config.S3_KEY
 S3_SECRET = config.S3_SECRET
 
-app.config['S3_BUCKET'] = S3_BUCKET
-app.config['S3_KEY'] = S3_KEY
-app.config['S3_SECRET'] = S3_SECRET
+# Clarifai initialisation
+clarifai = ClarifaiApp(api_key=config.CLARIFAI_KEY)
+general_model = clarifai.public_models.general_model
+nsfw_model = clarifai.models.get('nsfw-v1.0')
+moderation_model = clarifai.models.get("moderation")
+workflow = Workflow(clarifai.api, workflow_id="content-review")
 
 
 # Home Page
