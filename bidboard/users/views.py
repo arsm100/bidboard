@@ -2,6 +2,7 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from bidboard.users.forms import SignupForm
 from bidboard.users.model import User, db
 from flask_login import login_user, logout_user, login_required, login_url, current_user
+from bidboard.helpers.sendgrid import send_signup_email
 
 users_blueprint = Blueprint('users',
                             __name__,
@@ -36,6 +37,7 @@ def create():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
+        send_signup_email(new_user.email)
         flash('User Account created successfully')
         # change redirect destination later
         return redirect(url_for('home', id=current_user.id))

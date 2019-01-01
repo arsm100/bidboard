@@ -1,4 +1,7 @@
 import os
+import config
+import braintree
+import sendgrid
 from flask import Flask, render_template, redirect, url_for, flash
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
@@ -8,7 +11,6 @@ from authlib.flask.client import OAuth
 from clarifai.rest import ClarifaiApp, Workflow
 from clarifai.rest import Image as ClImage
 from clarifai.rest import Video as ClVideo
-import config
 
 app = Flask(__name__)
 app.config.from_object(os.environ['APP_SETTINGS'])
@@ -72,6 +74,25 @@ moderation_model = clarifai.models.get("moderation")
 workflow = Workflow(clarifai.api, workflow_id="content-review")
 
 
+# Sendgrid mailing service setup
+SENDGRID_API_KEY = config.SENDGRID_API_KEY
+sg = sendgrid.SendGridAPIClient(apikey=SENDGRID_API_KEY)
+
+
+# Braintree Setup & Environment Conditions (Sandbox)
+BRAINTREE_MERCHANT_ID = config.BRAINTREE_MERCHANT_ID
+BRAINTREE_PUBLIC_KEY = config.BRAINTREE_PUBLIC_KEY
+BRAINTREE_PRIVATE_KEY = config.BRAINTREE_PRIVATE_KEY
+
+gateway = braintree.BraintreeGateway(
+    braintree.Configuration(
+        braintree.Environment.Sandbox,
+        merchant_id=BRAINTREE_MERCHANT_ID,
+        public_key=BRAINTREE_PUBLIC_KEY,
+        private_key=BRAINTREE_PRIVATE_KEY
+    )
+)
+
 # Home Page
 @app.route("/")
 def home():
@@ -91,6 +112,8 @@ import bidboard_api
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix='/')
 app.register_blueprint(media_blueprint, url_prefix='/media')
+
+
 
 # Flask_Assets
 assets = Environment(app)

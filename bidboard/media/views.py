@@ -113,8 +113,7 @@ def upload(id):
 
                 db.session.add(new_medium)
                 db.session.commit()
-            import pdb
-            pdb.set_trace()
+                
             # change redirect destination later
             return redirect(url_for('home', id=current_user.id))
         else:

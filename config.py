@@ -33,6 +33,11 @@ class DevelopmentConfig(Config):
     S3_KEY = os.environ['S3_ACCESS_KEY']
     S3_SECRET = os.environ['S3_SECRET_ACCESS_KEY']
     CLARIFAI_KEY = os.environ['CLARIFAI_API_KEY']
+    BRAINTREE_MERCHANT_ID = os.environ['BRAINTREE_MERCHANT_ID']
+    BRAINTREE_PUBLIC_KEY = os.environ['BRAINTREE_PUBLIC_KEY']
+    BRAINTREE_PRIVATE_KEY = os.environ['BRAINTREE_PRIVATE_KEY']
+    SENDGRID_API_KEY = os.environ['SENDGRID_API_KEY']
+
 
 
 class TestingConfig(Config):
