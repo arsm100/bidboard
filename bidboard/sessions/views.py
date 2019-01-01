@@ -3,6 +3,7 @@ from bidboard.sessions.forms import LogInForm
 from flask_login import login_user, current_user, login_required, logout_user
 from flask import redirect, url_for, render_template, Blueprint, flash, request
 from bidboard import oauth, google, GOOGLE_REDIRECT_URI
+from bidboard.helpers.sendgrid import send_signup_email
 import random
 
 sessions_blueprint = Blueprint(
@@ -79,6 +80,7 @@ def google_authorize_login():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
+        send_signup_email(new_user.email)
         flash('bidboard account created successfully!')
         flash('Please edit the company name and create a password for your bidboard account from the Settings tab')
         # send_signup_email(new_user.email)

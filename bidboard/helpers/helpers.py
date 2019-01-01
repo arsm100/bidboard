@@ -1,4 +1,3 @@
-import os
 from bidboard import S3_KEY, S3_SECRET, S3_BUCKET
 import boto3
 import botocore

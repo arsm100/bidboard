@@ -1,0 +1,54 @@
+from bidboard import sg
+from sendgrid.helpers.mail import Email, Content, Mail
+from flask_login import current_user
+
+
+def send_bid_email(to, bid_amount):
+    from_email = Email("bids@bidboard.com")
+    to_email = Email(to)
+    subject = f"Thank You For Placing Your Bid {current_user.first_name}!"
+    content = Content(
+        "text/html", f"<html><table><tr><td align='center'><img src='https://s3.amazonaws.com/bidboard/11.31851.logo.jpg' height='200px'></td></tr><tr><td>Dear {current_user.first_name} {current_user.last_name},<br><br>You have just place a {bid_amount} MYR bid on BidBoard. The details of your booking are as follows: <br> <br>Billboard size: (size) <br>Billboard location: (location) <br>Booking Date: (date)<br> Booking Time: (time)<br> <br> This is <b>NOT</b> a confirmed booking. You will recieve another email when the bidding closes to confirm your booking if you are the highest bidder. You will also recieve an email to notify you if someone has outbidded you. <br> Happy Advertising! <br><br>Kind regards, <br> Bidboard Team </td></tr><tr><td align='center'>This is a no-reply address. If you have any questions, please email us <a href='mail=to:ahmed160ramzi@gmail.com'>here.</a></td></tr></table>"
+    )
+
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+
+
+def send_confirm_email(to, bid_amount):
+    from_email = Email("booking@bidboard.com")
+    to_email = Email(to)
+    subject = f"Your Booking Has Been Confirmed {current_user.first_name}!"
+    content = Content(
+        "text/html", f"<html><table><tr><td align='center'><img src='https://s3.amazonaws.com/bidboard/11.31851.logo.jpg' height='200px'></td></tr><tr><td>Dear {current_user.first_name} {current_user.last_name},<br><br>The bidding has closed and you have been declared the winner! The details of your booking are as follows: <br> <br>Total payment: {bid_amount} MYR<br> Billboard size: (size) <br>Billboard location: (location) <br>Booking Date: (date)<br> Booking Time: (time)<br> <br> This is the final confirmation email. We look forward to working with you again!<br> Happy Advertising! <br><br>Kind regards, <br> Bidboard Team </td></tr><tr><td align='center'>This is a no-reply address. If you have any questions, please email us <a href='mail=to:ahmed160ramzi@gmail.com'>here.</a></td></tr></table>"
+    )
+
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+
+
+def send_outbid_email(to, bid_amount, higher_bid_amount):
+    from_email = Email("bids@bidboard.com")
+    to_email = Email(to)
+    subject = f"Oh No! Someone Has Outbid You {current_user.first_name}!"
+    content = Content(
+        "text/html", f"<html><table><tr><td align='center'><img src='https://s3.amazonaws.com/bidboard/11.31851.logo.jpg' height='200px'></td></tr><tr><td>Dear {current_user.first_name} {current_user.last_name},<br><br>Someone has placed a higher bid on one of your booked billboard. The details of the booking are as follows: <br> <br>Your bid: {bid_amount} MYR<br> Highest Bid: {higher_bid_amount} MYR <br>Billboard size: (size) <br>Billboard location: (location) <br>Booking Date: (date)<br> Booking Time: (time)<br> <br> You still have a chance to get this booking back by raising your bid before (booking_time-1week). <br> Happy Advertising! <br><br>Kind regards, <br> Bidboard Team </td></tr><tr><td align='center'>This is a no-reply address. If you have any questions, please email us <a href='mail=to:ahmed160ramzi@gmail.com'>here.</a></td></tr></table>"
+    )
+
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
+    # print(response.status_code)
+    # print(response.body)
+    # print(response.headers)
+
+
+def send_signup_email(to):
+    from_email = Email("signup@bidboard.com")
+    to_email = Email(to)
+    subject = f"Welcome to Bidboard {current_user.first_name}!"
+    content = Content(
+        "text/html", f"<html><table><tr><td align='center'><img src='https://s3.amazonaws.com/bidboard/11.31851.logo.jpg' height='200px'></td></tr><tr><td>Dear {current_user.first_name} {current_user.last_name},<br><br>You have just signed up on Bidboard! <br>We encourage you to start browsing our broad collection of billboard locations and sizes. We look forward to working with you on reinforcing and improving your brand recognition and maximising the returns of your marketing campaigns. <br> We wish you the most successful of experiences with Bidboard! <br> <br> Kind regards, <br> Bidboard Team </td></tr><tr><td align='center'>This is a no-reply address. If you have any questions, please email us <a href='mail=to:ahmed160ramzi@gmail.com'>here.</a></td></tr></table>"
+    )
+
+    mail = Mail(from_email, subject, to_email, content)
+    response = sg.client.mail.send.post(request_body=mail.get())
