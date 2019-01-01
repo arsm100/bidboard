@@ -22,11 +22,12 @@ db = SQLAlchemy(app, session_options={"autoflush": False})
 
 Migrate(app, db)
 
+# not required with react - login handled on the frontend
 login_manager = LoginManager()
 login_manager.init_app(app)
 # login_manager.login_view = "sessions.new"
-login_manager.session_protection = "basic"
-login_manager.login_message = "Please login to bidboard first"
+# login_manager.session_protection = "basic"
+# login_manager.login_message = "Please login to bidboard first"
 
 
 @login_manager.user_loader
@@ -96,6 +97,13 @@ gateway = braintree.BraintreeGateway(
 def generate_client_token():
     return gateway.client_token.generate()
 
+
+# import user, image & marketplace models so that you can run migration
+from bidboard.users.model import User
+from bidboard.media.model import Medium
+from bidboard.billboards.model import Billboard
+from bidboard.bids.model import Bid
+
 # Home Page
 @app.route("/")
 def home():
@@ -131,9 +139,6 @@ css = Bundle('css/vendor/bootstrap_4.1.1.css', 'css/style.css',
 
 assets.register({'js_all': js, 'css_all': css})
 
-
-# import user, image & marketplace models so that you can run migration
-from bidboard.users.model import User
-from bidboard.media.model import Medium
-from bidboard.billboards.model import Billboard
-from bidboard.bids.model import Bid
+b = Billboard('Ahmed','Yemen','40 X 10','great')
+db.session.add(b)
+db.session.commit()

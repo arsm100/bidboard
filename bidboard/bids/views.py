@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from bidboard import generate_client_token, gateway, db, Bid, Medium, Billboard
 from bidboard.helpers.sendgrid import send_bid_email
+import time
+import datetime
 
 
 bids_blueprint = Blueprint(
@@ -31,7 +33,7 @@ def checkout(medium_id, billboard_id):
             user_id=current_user.id,
             billboard_id=billboard_id,
             medium_id=medium_id,
-            booking_at='2019,1,15,13,30',
+            booking_at=datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S"),
             amount=amount
         )
         db.session.add(new_bid)

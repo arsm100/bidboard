@@ -17,8 +17,7 @@ New Bid!
             </p>
         </header>
 
-        <form id="payment-form" method="POST" action="{{ url_for('bids.checkout', medium_id=medium_id) }}">
-            <input id="csrf_token" name="csrf_token" type="hidden" value="{{ (csrf_token()) }}">
+        <form id="payment-form" method="POST" action="{{ url_for('bids.checkout', medium_id=medium_id, billboard_id = 1) }}">
             <section>
                 <label for="amount">
                     <span class="input-label">Amount</span>
