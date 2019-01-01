@@ -21,8 +21,11 @@ class User(db.Model, UserMixin):
     email = db.Column(db.String(120), index=True, unique=True, nullable=False)
     password_hash = db.Column(db.String(), nullable=False)
     description = db.Column(db.Text)
+    successful_bookings = db.Column(db.ARRAY(db.Integer), nullable=True)    
     media = db.relationship("Medium", backref="users", lazy=True,
                              order_by="desc(Medium.id)", cascade="delete, delete-orphan")
+    bids = db.relationship("Bid", backref="users", lazy=False,
+                             order_by="desc(Bid.id)", cascade="delete, delete-orphan")
 
     def __init__(self, company_name, first_name, last_name, email, password):
         self.first_name = first_name
@@ -30,6 +33,7 @@ class User(db.Model, UserMixin):
         self.email = email
         self.company_name = company_name
         self.set_password(password)
+        self.successful_bookings = []
 
     def __repr__(self):
         return f"{self.company_name} with email {self.email} saved to database!"
@@ -94,7 +98,17 @@ class User(db.Model, UserMixin):
 
     def check_password(self, password):
         return check_password_hash(self.password_hash, password)
-    
+
+    def get_successful_bookings(self):
+        bids = self.bids
+        successful_bookings = []
+        for bid in bids:
+            if bid.is_confirmed:
+                successful_bookings.append(bid.id)
+        self.successful_bookings = successful_bookings
+        return successful_bookings
+
+
     def encode_auth_token(self, user_id):
         """
         Generates the Auth Token

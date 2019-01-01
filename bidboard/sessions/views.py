@@ -30,7 +30,7 @@ def authenticate():
         flash('Logged in successfully')
         next = request.args.get('next')
         # change redirect destination later
-        return redirect(next or url_for('users.dashboard', id=current_user.id))
+        return redirect(next or url_for('home', id=current_user.id))
 
     else:
         flash('Wrong Email/Password')

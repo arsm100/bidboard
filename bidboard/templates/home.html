@@ -22,4 +22,24 @@ Home
   {% endif %}
 </div>
 
+<div class="container">
+  <h2 style="clear: both;">{{current_user.company_name}}'s Gallery!</h2>
+
+  <div class="image-row" style="background-color: #f5f5f5">
+    <div class="image-set">
+      {% for meduim in current_user.media %}
+      <div style="display: inline-block; margin:5px">
+        <a class="image-link" href="{{medium.medium_url}}" data-lightbox="image-set" data-title="{{medium.medium_description|default('')}}">
+          <img style="margin-bottom:5px" class="gallery-image" src="{{medium.medium_url}}" width=200px height=200px>
+        </a>
+        <br>
+        <a href="{{ url_for('bids.create', medium_id = medium.id) }}" class="btn btn-primary">Pay</a>
+        {% endif %}
+      </div>
+
+      {% endfor %}
+    </div>
+  </div>
+</div>
+
 {% endblock %}

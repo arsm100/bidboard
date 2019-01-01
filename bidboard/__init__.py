@@ -93,6 +93,9 @@ gateway = braintree.BraintreeGateway(
     )
 )
 
+def generate_client_token():
+    return gateway.client_token.generate()
+
 # Home Page
 @app.route("/")
 def home():
@@ -107,18 +110,20 @@ def home():
 from bidboard.users.views import users_blueprint
 from bidboard.sessions.views import sessions_blueprint
 from bidboard.media.views import media_blueprint
+from bidboard.bids.views import bids_blueprint
 import bidboard_api
 
 app.register_blueprint(users_blueprint, url_prefix="/users")
 app.register_blueprint(sessions_blueprint, url_prefix='/')
 app.register_blueprint(media_blueprint, url_prefix='/media')
+app.register_blueprint(bids_blueprint, url_prefix='/bids')
 
 
 
 # Flask_Assets
 assets = Environment(app)
 
-js = Bundle('js/vendor/jquery_3.2.1.js', 'js/vendor/popper_1.11.0.js', 'js/vendor/bootstrap_4.1.1.js',
+js = Bundle('js/vendor/brainTree_1.14.1.js', 'js/vendor/jquery_3.2.1.js', 'js/vendor/popper_1.11.0.js', 'js/vendor/bootstrap_4.1.1.js',
             filters='jsmin', output='gen/packed.%(version)s.js')
 
 css = Bundle('css/vendor/bootstrap_4.1.1.css', 'css/style.css',
@@ -130,3 +135,5 @@ assets.register({'js_all': js, 'css_all': css})
 # import user, image & marketplace models so that you can run migration
 from bidboard.users.model import User
 from bidboard.media.model import Medium
+from bidboard.billboards.model import Billboard
+from bidboard.bids.model import Bid
