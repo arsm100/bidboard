@@ -47,7 +47,6 @@ def checkout(medium_id, billboard_id):
 
 
 @bids_blueprint.route("/", methods=["GET"])
-@login_required
 def index():
     bids = Bid.query.all()
     return render_template('bids/index.html', Medium=Medium, bids=bids)

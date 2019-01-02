@@ -8,7 +8,7 @@ class Bid(db.Model):
     __tablename__ = 'bids'
 
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False) #can be ondelete="SET NULL"
     billboard_id = db.Column(db.Integer, db.ForeignKey('billboards.id'), nullable=False)
     medium_id = db.Column(db.Integer, db.ForeignKey('media.id'), nullable=False)
     created_at = db.Column(db.Numeric(), nullable=False)
@@ -30,9 +30,8 @@ class Bid(db.Model):
 
     @hybrid_property
     def created_at_readable(self):
-        self.created_at.strftime("%Y-%m-%d %H")
+        return datetime.datetime.fromtimestamp(self.created_at).strftime("%Y-%m-%d %I %p")
 
     @hybrid_property
     def booking_at_readable(self):
-        self.booking_at.strftime("%Y-%m-%d %H")
-        
+        return datetime.datetime.fromtimestamp(self.booking_at).strftime("%Y-%m-%d %I %p")

@@ -4,6 +4,7 @@ from bidboard.users.model import User
 import random
 from werkzeug.utils import secure_filename
 from bidboard.helpers.helpers import allowed_file, upload_file
+from bidboard.helpers.content_review import review_media
 
 
 media_api_blueprint = Blueprint('media_api',
@@ -113,11 +114,14 @@ def upload():
 
         db.session.add(new_medium)
         db.session.commit()
+        
+        review_media(new_medium)
+        del new_medium.__dict__['_sa_instance_state']
 
         responseObject = {
             'status': 'success',
-            'message': 'Media uploaded successfully ',
-            'medium_url': new_medium.medium_url
+            'message': 'Media uploaded successfully. Check approval status in the dashboard',
+            'medium': new_medium.__dict__
         }
 
         return make_response(jsonify(responseObject)), 201

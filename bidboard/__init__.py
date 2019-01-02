@@ -131,7 +131,7 @@ app.register_blueprint(bids_blueprint, url_prefix='/bids')
 # Flask_Assets
 assets = Environment(app)
 
-js = Bundle('js/vendor/brainTree_1.14.1.js', 'js/vendor/jquery_3.2.1.js', 'js/vendor/popper_1.11.0.js', 'js/vendor/bootstrap_4.1.1.js',
+js = Bundle('js/vendor/jquery_3.2.1.js', 'js/vendor/popper_1.11.0.js', 'js/vendor/bootstrap_4.1.1.js',
             filters='jsmin', output='gen/packed.%(version)s.js')
 
 css = Bundle('css/vendor/bootstrap_4.1.1.css', 'css/style.css',
