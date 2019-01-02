@@ -81,9 +81,9 @@ def upload(id):
 
                 moderation = new_medium.concepts['moderation']
                 illegal = new_medium.concepts['illegal']
-                if new_medium.concepts['nsfw-v1.0']['nsfw'] < 0.3 \
-                        and moderation['gore']+moderation['explicit']+moderation['drug'] < 0.3\
-                        and illegal['smoking']+illegal['cigarettes']+illegal['guns']+illegal['weapons'] < 0.3:
+                if new_medium.concepts['nsfw-v1.0']['nsfw'] < 0.5 \
+                        and moderation['gore']+moderation['explicit']+moderation['drug'] < 0.5\
+                        and illegal['smoking']+illegal['cigs']+illegal['guns']+illegal['weapons'] < 0.5:
                     new_medium.is_approved = True
                     db.session.add(new_medium)
                     db.session.commit()
@@ -107,7 +107,7 @@ def upload(id):
                 video_frames = list(new_medium.concepts.items())
                 new_medium.is_approved = True
                 for video_frame in video_frames:
-                    if video_frame[1]['gore'] + video_frame[1]['drug'] + video_frame[1]['explicit'] > 3:
+                    if video_frame[1]['gore'] + video_frame[1]['drug'] + video_frame[1]['explicit'] > 0.5:
                         new_medium.is_approved = False
                         break
 

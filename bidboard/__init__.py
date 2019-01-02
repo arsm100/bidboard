@@ -138,7 +138,3 @@ css = Bundle('css/vendor/bootstrap_4.1.1.css', 'css/style.css',
              filters='cssmin', output='gen/packed.%(version)s.css')
 
 assets.register({'js_all': js, 'css_all': css})
-
-b = Billboard('Ahmed','Yemen','40 X 10','great')
-db.session.add(b)
-db.session.commit()

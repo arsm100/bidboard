@@ -44,11 +44,20 @@ def show():
     user = User.query.get(user_id)
 
     if user:
-        media = Medium.query.with_entities(
-            Medium.medium_url).filter_by(user_id=user.id).all()
-        media = [medium[0] for medium in media]
+        media = user.media
+        all_ads = []
+        for medium in media:
+            del medium.__dict__['_sa_instance_state']
+            all_ads.append(medium.__dict__)
+        
+        responseObject = {
+            'status': 'success',
+            'message': 'All ads media for user returned',
+            'all_ads': all_ads
+        }
 
-        return jsonify(media)
+        return make_response(jsonify(responseObject)), 201
+
     else:
         responseObject = {
             'status': 'failed',

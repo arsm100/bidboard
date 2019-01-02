@@ -24,7 +24,7 @@ class User(db.Model, UserMixin):
     successful_bookings = db.Column(db.ARRAY(db.Integer), nullable=True)    
     media = db.relationship("Medium", backref="users", lazy=True,
                              order_by="desc(Medium.id)", cascade="delete, delete-orphan")
-    bids = db.relationship("Bid", backref="users", lazy=False,
+    bids = db.relationship("Bid", backref="users",
                              order_by="desc(Bid.id)", cascade="delete, delete-orphan")
 
     def __init__(self, company_name, first_name, last_name, email, password):
