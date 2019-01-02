@@ -2,7 +2,6 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from bidboard import generate_client_token, gateway, db, Bid, Medium, Billboard
 from bidboard.helpers.sendgrid import send_bid_email
-import time
 import datetime
 
 
@@ -33,12 +32,12 @@ def checkout(medium_id, billboard_id):
             user_id=current_user.id,
             billboard_id=billboard_id,
             medium_id=medium_id,
-            booking_at=datetime.datetime.fromtimestamp(time.time()).strftime("%Y-%m-%d %H:%M:%S"),
+            booking_at=datetime.datetime.timestamp(datetime.datetime.now()),
             amount=amount
         )
         db.session.add(new_bid)
         db.session.commit()
-        send_bid_email(current_user.email, amount)
+        send_bid_email(current_user.email, new_bid.id)
         flash('Bid placed successfully.')
         return redirect(url_for('home'))
     else:
