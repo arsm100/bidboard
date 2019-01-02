@@ -22,4 +22,4 @@ class Medium(db.Model):
         self.campaign_name = campaign_name
         self.description = description
         self.is_approved = False
-        self.concepts = []
+        self.concepts = {}

@@ -1,0 +1,37 @@
+{% extends "_base.html" %}
+{% block title %}
+All the bids!
+{% endblock %}
+{% block content %}
+<link rel="stylesheet" href="">
+<h1>Bids List!</h1>
+
+<table class="table-striped table-bordered" width=100%>
+    <tr>
+        <th>ID</th>
+        <th>User</th>
+        <th>Billboard</th>
+        <th style="width: 210px;">Ad</th>
+        <th>Paid at</th>
+        <th>Booking at</th>
+        <th>Amount</th>
+        <th>Currency</th>
+        <th>Confirmed</th>
+    </tr>
+    {% for bid in bids %}
+    <tr>
+        <td>{{bid.id}}</td>
+        <td>{{bid.user_id}}</td>
+        <td>{{bid.billboard_id}}</td>
+        <td><img src="{{Medium.query.get(bid.medium_id).medium_url}}" alt="image" width="200px"></td>
+        <td>{{bid.created_at}}</td>
+        <td>{{bid.booking_at_readable}}</td>
+        <td>{{bid.amount}}</td>
+        <td>{{bid.currency}}</td>
+        <td>{{bid.is_confirmed}}</td>
+    </tr>
+    {% endfor %}
+    </th>
+
+</table>
+{% endblock %}
