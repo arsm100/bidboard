@@ -26,12 +26,12 @@ class Bid(db.Model):
         self.amount = amount
 
     def __repr__(self):
-        return f"Bid of {self.amount} has been made for {self.billboard_id} by {self.user_id} for {self.booking_at}"
+        return f"Bid of {self.amount} MYR has been made for Billboard {self.billboard_id} by user {self.user_id} at {self.booking_at_readable}"
 
     @hybrid_property
     def created_at_readable(self):
-        return datetime.datetime.fromtimestamp(self.created_at).strftime("%Y-%m-%d %I %p")
+        return datetime.datetime.fromtimestamp(self.created_at).strftime("%Y-%m-%d  %I:%M %p")
 
     @hybrid_property
     def booking_at_readable(self):
-        return datetime.datetime.fromtimestamp(self.booking_at).strftime("%Y-%m-%d %I %p")
+        return datetime.datetime.fromtimestamp(self.booking_at).strftime("%Y-%m-%d  %I%p")

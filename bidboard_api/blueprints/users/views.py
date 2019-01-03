@@ -1,5 +1,6 @@
 from flask import jsonify, Blueprint, request, make_response
 from bidboard.users.model import User, db
+from bidboard.helpers.sendgrid import send_signup_email
 
 users_api_blueprint = Blueprint('users_api',
                              __name__,
@@ -39,6 +40,7 @@ def create():
     else:
         db.session.add(new_user)
         db.session.commit()
+        send_signup_email(new_user.email)
         auth_token = new_user.encode_auth_token(new_user.id)
         del new_user.__dict__['_sa_instance_state']
         del new_user.__dict__['password_hash']
