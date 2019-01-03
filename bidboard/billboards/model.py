@@ -32,3 +32,10 @@ class Billboard(db.Model):
             bid_times.append(bid.booking_at)
         self.bid_times = bid_times
         return self.bid_times
+
+    def get_bids(self):
+        jsonfiable_bids = []
+        for bid in self.bids:
+            del bid.__dict__['_sa_instance_state']
+            jsonfiable_bids.append(bid.__dict__)
+        return jsonfiable_bids

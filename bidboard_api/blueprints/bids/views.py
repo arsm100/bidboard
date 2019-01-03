@@ -1,5 +1,5 @@
 from flask import jsonify, Blueprint, request, make_response
-from bidboard.bids.model import Bid
+from bidboard.bids.model import Bid, db
 import simplejson as json
 from bidboard import generate_client_token, gateway, User
 from bidboard.helpers.sendgrid import send_bid_email
@@ -7,6 +7,7 @@ from bidboard.helpers.sendgrid import send_bid_email
 bids_api_blueprint = Blueprint('bids_api',
                                 __name__,
                                 template_folder='templates')
+
 
 @bids_api_blueprint.route('/', methods=['GET'])
 def index():
@@ -43,10 +44,10 @@ def new_bid():
 
     if result.is_success:
         new_bid = Bid(
-            user_id=user_id
+            user_id=user_id,
             billboard_id=post_data.get('billboard_id'),
-            medium_id=post_data('medium_id'),
-            booking_at=post_data('booking_at'),
+            medium_id=post_data.get('medium_id'),
+            booking_at=post_data.get('booking_at'),
             amount=amount
         )
         db.session.add(new_bid)
@@ -67,7 +68,7 @@ def new_bid():
             'message': result.transaction.status,
             'details': f'{result.transaction.processor_response_code} : {result.transaction.processor_response_text}'
         }
-        
+
         return make_response(jsonify(responseObject)), 201
 
 
@@ -89,9 +90,21 @@ def show():
     user = User.query.get(user_id)
 
     if user:
-        del user.__dict__['_sa_instance_state']
-        del user.__dict__['password_hash']
-        return jsonify(user.__dict__)
+        bids = user.bids
+        all_bids = []
+        for bid in bids:
+            del bid.__dict__['_sa_instance_state']
+            bid.__dict__['created_at_readable'] = bid.created_at_readable
+            bid.__dict__['booking_at_readable'] = bid.booking_at_readable
+            all_bids.append(bid.__dict__)
+
+        responseObject = {
+            'status': 'success',
+            'message': 'All bids for user returned',
+            'all_ads': all_bids
+        }
+
+        return make_response(json.dumps(responseObject)), 201
 
     else:
         responseObject = {
