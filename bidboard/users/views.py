@@ -37,7 +37,7 @@ def create():
         db.session.add(new_user)
         db.session.commit()
         login_user(new_user)
-        send_signup_email(new_user.email)
+        send_signup_email(new_user.email, new_user.id)
         flash('User Account created successfully')
         # change redirect destination later
         return redirect(url_for('home', id=current_user.id))

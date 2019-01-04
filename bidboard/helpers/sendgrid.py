@@ -51,12 +51,12 @@ def send_outbid_email(to, bid_id, higher_bid_id):
     # print(response.headers)
 
 
-def send_signup_email(to):
+def send_signup_email(to, user_id):
     from_email = Email("signup@bidboard.com")
     to_email = Email(to)
-    subject = f"Welcome to Bidboard {User.query.get((bid.user_id)).first_name}!"
+    subject = f"Welcome to Bidboard {User.query.get(user_id).first_name}!"
     content = Content(
-        "text/html", f"<html><table><tr><td align='center'><img src='https://s3.amazonaws.com/bidboard/11.31851.logo.jpg' height='200px'></td></tr><tr><td>Dear {User.query.get((bid.user_id)).first_name} {User.query.get((bid.user_id)).last_name},<br><br>You have just signed up on Bidboard! <br>We encourage you to start browsing our broad collection of billboard locations and sizes. We look forward to working with you on reinforcing and improving your brand recognition and maximising the returns of your marketing campaigns. <br> We wish you the most successful of experiences with Bidboard! <br> <br> Kind regards, <br> Bidboard Team </td></tr><tr><td align='center'>This is a no-reply address. If you have any questions, please email us <a href='mail=to:ahmed160ramzi@gmail.com'>here.</a></td></tr></table>"
+        "text/html", f"<html><table><tr><td align='center'><img src='https://s3.amazonaws.com/bidboard/11.31851.logo.jpg' height='200px'></td></tr><tr><td>Dear {User.query.get((user_id)).first_name} {User.query.get((user_id)).last_name},<br><br>You have just signed up on Bidboard! <br>We encourage you to start browsing our broad collection of billboard locations and sizes. We look forward to working with you on reinforcing and improving your brand recognition and maximising the returns of your marketing campaigns. <br> We wish you the most successful of experiences with Bidboard! <br> <br> Kind regards, <br> Bidboard Team </td></tr><tr><td align='center'>This is a no-reply address. If you have any questions, please email us <a href='mail=to:ahmed160ramzi@gmail.com'>here.</a></td></tr></table>"
     )
 
     mail = Mail(from_email, subject, to_email, content)

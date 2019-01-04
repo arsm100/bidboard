@@ -3,17 +3,20 @@ from bidboard.users.model import User, db
 from bidboard.helpers.sendgrid import send_signup_email
 
 users_api_blueprint = Blueprint('users_api',
-                             __name__,
-                             template_folder='templates')
+                                __name__,
+                                template_folder='templates')
+
 
 @users_api_blueprint.route('/', methods=['GET'])
 def index():
     users = User.query.all()
 
     # there is probably a more efficient to do this
-    users = [{"id": int(user.id), "company_name": user.company_name, "description": user.description, "email": user.email, "first_name": user.first_name, "last_name": user.last_name} for user in users]
+    users = [{"id": int(user.id), "company_name": user.company_name, "description": user.description,
+              "email": user.email, "first_name": user.first_name, "last_name": user.last_name} for user in users]
 
     return jsonify(users)
+
 
 @users_api_blueprint.route('/create', methods=['POST'])
 def create():
@@ -40,7 +43,7 @@ def create():
     else:
         db.session.add(new_user)
         db.session.commit()
-        send_signup_email(new_user.email)
+        send_signup_email(new_user.email, new_user.id)
         auth_token = new_user.encode_auth_token(new_user.id)
         del new_user.__dict__['_sa_instance_state']
         del new_user.__dict__['password_hash']
