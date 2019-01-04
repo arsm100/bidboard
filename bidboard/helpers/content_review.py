@@ -13,7 +13,7 @@ def review_media(new_medium):
             final_concepts[output['model']['name']] = {}
             for concept in concepts:
                 final_concepts[output['model']['name']
-                                ][concept['name']] = concept['value']
+                               ][concept['name']] = concept['value']
 
         new_medium.concepts = final_concepts
         db.session.add(new_medium)
@@ -27,6 +27,7 @@ def review_media(new_medium):
             new_medium.is_approved = True
             db.session.add(new_medium)
             db.session.commit()
+        return final_concepts
 
     else:
         content_review = moderation_model.predict(
@@ -38,7 +39,7 @@ def review_media(new_medium):
             final_concepts[frame['frame_info']['index']] = {}
             for concept in concepts:
                 final_concepts[frame['frame_info']['index']
-                                ][concept['name']] = concept['value']
+                               ][concept['name']] = concept['value']
 
         new_medium.concepts = final_concepts
         db.session.add(new_medium)
@@ -53,3 +54,4 @@ def review_media(new_medium):
 
         db.session.add(new_medium)
         db.session.commit()
+        return final_concepts

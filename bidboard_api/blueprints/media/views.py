@@ -49,7 +49,7 @@ def show():
         for medium in media:
             del medium.__dict__['_sa_instance_state']
             all_ads.append(medium.__dict__)
-        
+
         responseObject = {
             'status': 'success',
             'message': 'All ads media for user returned',
@@ -123,14 +123,17 @@ def upload():
 
         db.session.add(new_medium)
         db.session.commit()
-        
-        review_media(new_medium)
-        del new_medium.__dict__['_sa_instance_state']
+
+        concepts = review_media(new_medium)
+        is_approved = new_medium.is_approved
 
         responseObject = {
             'status': 'success',
             'message': 'Media uploaded successfully. Check approval status in the dashboard',
-            'medium': new_medium.__dict__
+            # 'medium': new_medium.__dict__,
+            'concepts': concepts,
+            'is_approved': is_approved
+
         }
 
         return make_response(jsonify(responseObject)), 201
