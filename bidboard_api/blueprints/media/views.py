@@ -126,7 +126,6 @@ def upload():
 
         concepts = review_media(new_medium)
         is_approved = new_medium.is_approved
-        del new_medium.__dict__['_sa_instance_state']
 
         responseObject = {
             'status': 'success',
