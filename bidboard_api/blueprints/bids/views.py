@@ -5,8 +5,8 @@ from bidboard import generate_client_token, gateway, User
 from bidboard.helpers.sendgrid import send_bid_email
 
 bids_api_blueprint = Blueprint('bids_api',
-                                __name__,
-                                template_folder='templates')
+                               __name__,
+                               template_folder='templates')
 
 
 @bids_api_blueprint.route('/', methods=['GET'])
@@ -33,12 +33,12 @@ def new_bid():
     post_data = request.get_json()
     user_id = post_data.get('user_id')
     amount = post_data.get('amount')
-    nonce_from_the_client = post_data.get('payment_method_nonce')
+    nonce_from_the_client = post_data.get('nonce')
     result = gateway.transaction.sale({
         "amount": amount,
         "payment_method_nonce": nonce_from_the_client,
         "options": {
-            "submit_for_settlement": True
+            "submit_for_settlement": False
         }
     })
 
