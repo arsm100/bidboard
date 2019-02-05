@@ -10,3 +10,5 @@ https://github.com/arsm100/React-BidBoard
 
 Demo:
 http://arsm100.github.io/react-bidboard
+
+(The backend server is hosted on Heroku and hence has a bit of a "cold start". Therefore, the very first request might take a couple of seconds to get a response as the server spins up. All subsequent requests should be at the expected high speed)
