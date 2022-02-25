@@ -12,12 +12,12 @@ chardet==3.0.4
 clarifai==2.5.0
 Click==7.0
 configparser==3.5.0
-cryptography==2.4.2
+cryptography==3.2
 cssmin==0.2.0
 docutils==0.14
 Flask==1.0.2
 Flask-Assets==0.12
-Flask-Cors==3.0.7
+Flask-Cors==3.0.9
 Flask-Login==0.4.1
 Flask-Migrate==2.3.1
 Flask-SQLAlchemy==2.3.2
@@ -28,7 +28,7 @@ grpcio==1.17.1
 idna==2.8
 isort==4.3.4
 itsdangerous==1.1.0
-Jinja2==2.10
+Jinja2==2.11.3
 jmespath==0.9.3
 jsmin==2.2.2
 jsonschema==2.6.0
@@ -43,7 +43,7 @@ psycopg2-binary==2.7.6.1
 pycodestyle==2.4.0
 pycparser==2.19
 PyJWT==1.7.1
-pylint==2.2.2
+pylint==2.7.0
 python-dateutil==2.7.5
 python-dotenv==0.10.1
 python-editor==1.0.3
@@ -53,9 +53,9 @@ s3transfer==0.1.13
 sendgrid==5.6.0
 simplejson==3.16.0
 six==1.12.0
-SQLAlchemy==1.2.15
-urllib3==1.24.1
+SQLAlchemy==1.2.18
+urllib3==1.26.5
 webassets==0.12.1
-Werkzeug==0.14.1
+Werkzeug==0.15.3
 wrapt==1.10.11
-WTForms==2.2.1
+WTForms==3.0.0a1
