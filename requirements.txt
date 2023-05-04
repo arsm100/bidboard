@@ -15,7 +15,7 @@ configparser==3.5.0
 cryptography==3.2
 cssmin==0.2.0
 docutils==0.14
-Flask==1.0.2
+Flask==2.2.5
 Flask-Assets==0.12
 Flask-Cors==3.0.9
 Flask-Login==0.4.1
