@@ -12,7 +12,7 @@ chardet==3.0.4
 clarifai==2.5.0
 Click==7.0
 configparser==3.5.0
-cryptography==3.2
+cryptography==41.0.6
 cssmin==0.2.0
 docutils==0.14
 Flask==1.0.2
