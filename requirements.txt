@@ -17,7 +17,7 @@ cssmin==0.2.0
 docutils==0.14
 Flask==1.0.2
 Flask-Assets==0.12
-Flask-Cors==3.0.9
+Flask-Cors==6.0.0
 Flask-Login==0.4.1
 Flask-Migrate==2.3.1
 Flask-SQLAlchemy==2.3.2
